@@ -15,7 +15,8 @@ source:
     - b.patch
 
 build:
-  number: 1
+  merge_build_host: True  # [win]
+  number: 2
   skip: true  # [win32]
   rpaths:
     - lib/R/lib/
@@ -23,16 +24,16 @@ build:
 
 requirements:
   build:
+    - posix                # [win]
+    - {{ compiler('c') }}        # [unix]
+    - {{ compiler('m2w64_c') }}  # [win]
+  host:
     - r-base
     - r-r.utils
-    - posix                # [win]
-    - {{native}}toolchain  # [win]
-    - gcc                  # [not win]
 
   run:
     - r-base
     - r-r.utils
-    - libgcc  # [not win]
 
 test:
   commands:
