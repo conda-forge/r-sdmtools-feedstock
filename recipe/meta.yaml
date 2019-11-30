@@ -1,4 +1,5 @@
-{% set version = "1.1-221.1" %}
+{% set version = "1.1-221.2" %}
+{% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
 package:
@@ -10,29 +11,32 @@ source:
   url:
     - https://cran.r-project.org/src/contrib/SDMTools_{{ version }}.tar.gz
     - https://cran.r-project.org/src/contrib/Archive/SDMTools/SDMTools_{{ version }}.tar.gz
-  sha256: 3825856263bdb648ca018b27dc6ab8ceaef24691215c197f8d5cd17718b54fbb
+  sha256: f0dd8c5f98d2f2c012536fa56d8f7a58aaf0c11cbe3527e66d4ee3194f6a6cf7
   patches:
     - b.patch
 
 build:
   merge_build_host: True  # [win]
-  number: 1
-  skip: true  # [win32]
+  number: 0
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
-    - posix                # [win]
-    - {{ compiler('c') }}        # [unix]
-    - {{ compiler('m2w64_c') }}  # [win]
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
+    - {{posix}}sed               # [win]
+    - {{posix}}coreutils         # [win]
+    - {{posix}}zip               # [win]
   host:
     - r-base
     - r-r.utils
-
   run:
     - r-base
+    - {{native}}gcc-libs         # [win]
     - r-r.utils
 
 test:
@@ -51,12 +55,10 @@ about:
     part by financial support from the Australian Research Council & ARC Research Network
     for Earth System Science.
   license_family: GPL
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
 
 extra:
   recipe-maintainers:
     - conda-forge/r
-    - dpryan79
-    - bgruening
-    - daler
-    - johanneskoester
     - rvalieris
