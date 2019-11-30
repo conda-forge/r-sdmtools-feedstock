@@ -17,22 +17,25 @@ source:
 build:
   merge_build_host: True  # [win]
   number: 0
-  skip: true  # [win32]
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
-    - posix                # [win]
-    - {{ compiler('c') }}        # [unix]
-    - {{ compiler('m2w64_c') }}  # [win]
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
+    - {{posix}}sed               # [win]
+    - {{posix}}coreutils         # [win]
+    - {{posix}}zip               # [win]
   host:
     - r-base
     - r-r.utils
-
   run:
     - r-base
+    - {{native}}gcc-libs         # [win]
     - r-r.utils
 
 test:
@@ -51,12 +54,10 @@ about:
     part by financial support from the Australian Research Council & ARC Research Network
     for Earth System Science.
   license_family: GPL
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
 
 extra:
   recipe-maintainers:
     - conda-forge/r
-    - dpryan79
-    - bgruening
-    - daler
-    - johanneskoester
     - rvalieris
