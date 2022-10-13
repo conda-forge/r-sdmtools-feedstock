@@ -7,10 +7,9 @@ package:
   version: {{ version|replace("-", "_") }}
 
 source:
-  fn: SDMTools_{{ version }}.tar.gz
   url:
-    - https://cran.r-project.org/src/contrib/SDMTools_{{ version }}.tar.gz
-    - https://cran.r-project.org/src/contrib/Archive/SDMTools/SDMTools_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/SDMTools_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/SDMTools/SDMTools_{{ version }}.tar.gz
   sha256: f0dd8c5f98d2f2c012536fa56d8f7a58aaf0c11cbe3527e66d4ee3194f6a6cf7
   patches:
     - b.patch
@@ -31,6 +30,7 @@ requirements:
     - {{ posix }}sed               # [win]
     - {{ posix }}coreutils         # [win]
     - {{ posix }}zip               # [win]
+    - cross-r-base {{ r_base }}    # [build_platform != target_platform]
   host:
     - r-base
     - r-r.utils
@@ -46,7 +46,7 @@ test:
 
 about:
   home: http://www.rforge.net/SDMTools/
-  license: GPL-3
+  license: GPL-3.0-or-later
   summary: This packages provides a set of tools for post processing the outcomes of species
     distribution modeling exercises. It includes novel methods for comparing models
     and tracking changes in distributions through time. It further includes methods
